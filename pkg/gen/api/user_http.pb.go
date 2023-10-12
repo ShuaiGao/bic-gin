@@ -32,8 +32,10 @@ type x_UserService struct {
 // @Summary 获取用户列表
 // @Tags    User-Service
 // @Produce json
-// @Param   page      query    uint32 true "页码"
-// @Param   page_size query    uint32 true "每页数量"
+// @Param   page      query    uint32 true  "页码"
+// @Param   page_size query    uint32 true  "每页数量"
+// @Param   username  query    string false "参数无注释"
+// @Param   email     query    string false "参数无注释"
 // @Success 200       {object} ResponseUsers
 // @Failure 401       {string} string "header need Authorization data"
 // @Failure 403       {string} string "no api permission or no obj permission"

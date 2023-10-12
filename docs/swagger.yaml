@@ -153,11 +153,20 @@ definitions:
     type: object
   api.User:
     properties:
+      ban:
+        description: 账号是否禁用
+        type: boolean
       email:
-        description: 邮箱
+        description: required
         type: string
       id:
-        description: 主键ID
+        description: required
+        type: integer
+      name:
+        description: 姓名
+        type: string
+      update_time:
+        description: required
         type: integer
       username:
         description: 用户名
@@ -310,6 +319,14 @@ paths:
         name: page_size
         required: true
         type: integer
+      - description: 参数无注释
+        in: query
+        name: username
+        type: string
+      - description: 参数无注释
+        in: query
+        name: email
+        type: string
       produces:
       - application/json
       responses:

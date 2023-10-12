@@ -237,6 +237,18 @@ const docTemplate = `{
                         "name": "page_size",
                         "in": "query",
                         "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "参数无注释",
+                        "name": "username",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "参数无注释",
+                        "name": "email",
+                        "in": "query"
                     }
                 ],
                 "responses": {
@@ -478,12 +490,24 @@ const docTemplate = `{
         "api.User": {
             "type": "object",
             "properties": {
+                "ban": {
+                    "description": "账号是否禁用",
+                    "type": "boolean"
+                },
                 "email": {
-                    "description": "邮箱",
+                    "description": "required",
                     "type": "string"
                 },
                 "id": {
-                    "description": "主键ID",
+                    "description": "required",
+                    "type": "integer"
+                },
+                "name": {
+                    "description": "姓名",
+                    "type": "string"
+                },
+                "update_time": {
+                    "description": "required",
                     "type": "integer"
                 },
                 "username": {
