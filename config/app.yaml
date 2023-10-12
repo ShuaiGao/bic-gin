@@ -1,0 +1,26 @@
+app:
+  jwt_secret: "abc123"
+  jwt_refresh_secret: "abc123789"
+  log_save_path: "run/logs/"
+  log_save_name: "gin-bic.log"
+
+server:
+  run_mode: "debug"
+  http_port: 8080
+  read_timeout: 60
+  write_timeout: 60
+
+mysql:
+  host: "43.143.218.100"
+  port: 3306
+  user: "gin-bic"
+  database: "gin_bic"
+  password: "gin-bic@888Abc"
+
+
+redis:
+  addr: "127.0.0.1:6379"
+  password:
+  max_idle: 30
+  max_active: 30
+  idle_timeout: 200

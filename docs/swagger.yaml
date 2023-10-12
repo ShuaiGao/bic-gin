@@ -1,0 +1,331 @@
+basePath: /api/gin-bic
+definitions:
+  api.ResponseAuth:
+    properties:
+      expires:
+        description: '@gotags: validate:"required"'
+        type: integer
+      expires_refresh:
+        description: '@gotags: validate:"required"'
+        type: integer
+      roles:
+        items:
+          type: string
+        type: array
+      token:
+        description: '@gotags: validate:"required"'
+        type: string
+      token_refresh:
+        description: '@gotags: validate:"required"'
+        type: string
+      username:
+        type: string
+    required:
+    - expires
+    - expires_refresh
+    - token
+    - token_refresh
+    type: object
+  api.ResponseGetRole:
+    properties:
+      create_time:
+        description: 创建时间
+        type: integer
+      create_user:
+        description: 创建用户
+        type: string
+      father_id:
+        description: 父角色ID
+        type: integer
+      father_name:
+        description: 父角色名
+        type: string
+      id:
+        description: '@gotags: validate:"required"'
+        type: integer
+      name:
+        description: '@gotags: validate:"required"'
+        type: string
+      remark:
+        description: 备注
+        type: string
+      update_time:
+        description: 更新时间
+        type: integer
+      update_user:
+        description: 更新用户
+        type: string
+    required:
+    - id
+    - name
+    type: object
+  api.ResponseRoles:
+    properties:
+      data_list:
+        description: |-
+          uint32 page = 1;
+          uint32 page_size = 2;
+          uint32 total = 3;
+        items:
+          $ref: '#/definitions/api.RoleItem'
+        type: array
+    type: object
+  api.ResponseRoute:
+    properties:
+      item_list:
+        items:
+          $ref: '#/definitions/api.RouteItem'
+        type: array
+    type: object
+  api.ResponseUsers:
+    properties:
+      data_list:
+        items:
+          $ref: '#/definitions/api.User'
+        type: array
+      page:
+        type: integer
+      page_size:
+        type: integer
+      total:
+        type: integer
+    type: object
+  api.RoleItem:
+    properties:
+      create_time:
+        description: 创建时间
+        type: integer
+      create_user:
+        description: 创建用户
+        type: string
+      father_id:
+        description: 父角色ID
+        type: integer
+      father_name:
+        description: 父角色名
+        type: string
+      id:
+        description: '@gotags: validate:"required"'
+        type: integer
+      name:
+        description: '@gotags: validate:"required"'
+        type: string
+      remark:
+        description: 备注
+        type: string
+      update_time:
+        description: 更新时间
+        type: integer
+      update_user:
+        description: 更新用户
+        type: string
+    required:
+    - id
+    - name
+    type: object
+  api.RouteItem:
+    properties:
+      children:
+        items:
+          $ref: '#/definitions/api.RouteItem'
+        type: array
+      key:
+        type: string
+      meta:
+        $ref: '#/definitions/api.RouteMeta'
+      name:
+        type: string
+      path:
+        type: string
+    type: object
+  api.RouteMeta:
+    properties:
+      auths:
+        items:
+          type: string
+        type: array
+      icon:
+        type: string
+      rank:
+        type: string
+      title:
+        type: string
+    type: object
+  api.User:
+    properties:
+      email:
+        description: 邮箱
+        type: string
+      id:
+        description: 主键ID
+        type: integer
+      username:
+        description: 用户名
+        type: string
+    type: object
+host: api.gin-bic.cn
+info:
+  contact:
+    email: boringmanman@qq.com
+    name: GaoZiJia
+  title: gin-bic api文档
+  version: "1.0"
+paths:
+  /v1/auth/:
+    post:
+      parameters:
+      - description: 用户名
+        in: body
+        name: username
+        required: true
+        schema:
+          type: string
+      - description: 密码
+        in: body
+        name: password
+        required: true
+        schema:
+          type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/api.ResponseAuth'
+        "401":
+          description: header need Authorization data
+          schema:
+            type: string
+        "403":
+          description: no api permission or no obj permission
+          schema:
+            type: string
+      summary: 获取用户列表
+      tags:
+      - Auth-Service
+  /v1/role/:id/:
+    get:
+      parameters:
+      - description: some id
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/api.ResponseGetRole'
+        "401":
+          description: header need Authorization data
+          schema:
+            type: string
+        "403":
+          description: no api permission or no obj permission
+          schema:
+            type: string
+      summary: 获取角色详情
+      tags:
+      - Admin-Service
+  /v1/roles/:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/api.ResponseRoles'
+        "401":
+          description: header need Authorization data
+          schema:
+            type: string
+        "403":
+          description: no api permission or no obj permission
+          schema:
+            type: string
+      summary: 获取角色列表
+      tags:
+      - Admin-Service
+  /v1/routes/:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/api.ResponseRoute'
+        "401":
+          description: header need Authorization data
+          schema:
+            type: string
+        "403":
+          description: no api permission or no obj permission
+          schema:
+            type: string
+      summary: 获取路由
+      tags:
+      - Admin-Service
+  /v1/token/:
+    post:
+      parameters:
+      - description: 参数无注释
+        in: body
+        name: token_refresh
+        required: true
+        schema:
+          type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/api.ResponseAuth'
+        "401":
+          description: header need Authorization data
+          schema:
+            type: string
+        "403":
+          description: no api permission or no obj permission
+          schema:
+            type: string
+      summary: 刷新token
+      tags:
+      - Auth-Service
+  /v1/users/:
+    get:
+      parameters:
+      - description: 页码
+        in: query
+        name: page
+        required: true
+        type: integer
+      - description: 每页数量
+        in: query
+        name: page_size
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/api.ResponseUsers'
+        "401":
+          description: header need Authorization data
+          schema:
+            type: string
+        "403":
+          description: no api permission or no obj permission
+          schema:
+            type: string
+      summary: 获取用户列表
+      tags:
+      - User-Service
+swagger: "2.0"
