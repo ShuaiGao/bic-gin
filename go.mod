@@ -1,4 +1,4 @@
-module gin-bic
+module bic-gin
 
 go 1.20
 

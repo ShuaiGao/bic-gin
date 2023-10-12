@@ -1,7 +1,7 @@
 package service
 
 import (
-	"gin-bic/pkg/gen/api"
+	"bic-gin/pkg/gen/api"
 	"github.com/gin-gonic/gin"
 )
 

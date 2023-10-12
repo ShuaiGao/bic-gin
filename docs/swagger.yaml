@@ -1,4 +1,4 @@
-basePath: /api/gin-bic
+basePath: /api/bic-gin
 definitions:
   api.ResponseAuth:
     properties:
@@ -163,12 +163,12 @@ definitions:
         description: 用户名
         type: string
     type: object
-host: api.gin-bic.cn
+host: api.bic-gin.cn
 info:
   contact:
     email: boringmanman@qq.com
     name: GaoZiJia
-  title: gin-bic api文档
+  title: bic-gin api文档
   version: "1.0"
 paths:
   /v1/auth/:

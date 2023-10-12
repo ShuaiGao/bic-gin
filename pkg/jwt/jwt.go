@@ -40,7 +40,7 @@ func GenerateToken(userID uint, username string) (string, string, error) {
 		username,
 		jwt.RegisteredClaims{
 			ExpiresAt: &jwt.NumericDate{Time: expireTime},
-			Issuer:    "gin-bic",
+			Issuer:    "bic-gin",
 		},
 	}
 

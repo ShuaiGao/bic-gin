@@ -498,10 +498,10 @@ const docTemplate = `{
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = &swag.Spec{
 	Version:          "1.0",
-	Host:             "api.gin-bic.cn",
-	BasePath:         "/api/gin-bic",
+	Host:             "api.bic-gin.cn",
+	BasePath:         "/api/bic-gin",
 	Schemes:          []string{},
-	Title:            "gin-bic api文档",
+	Title:            "bic-gin api文档",
 	Description:      "",
 	InfoInstanceName: "swagger",
 	SwaggerTemplate:  docTemplate,

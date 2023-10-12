@@ -1,9 +1,9 @@
 package internal
 
 import (
-	"gin-bic/internal/service"
-	"gin-bic/pkg/gen/api"
-	"gin-bic/pkg/jwt"
+	"bic-gin/internal/service"
+	"bic-gin/pkg/gen/api"
+	"bic-gin/pkg/jwt"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )
@@ -33,9 +33,9 @@ func SetupRouter() *gin.Engine {
 		ctx.JSON(200, "success")
 	})
 
-	apiNoJwt := g.Group("/api/gin-bic")
+	apiNoJwt := g.Group("/api/bic-gin")
 	api.RegisterAuthServiceHttpHandler(apiNoJwt, service.AuthService{})
-	apiJWT := g.Group("/api/gin-bic", jwt.JWT())
+	apiJWT := g.Group("/api/bic-gin", jwt.JWT())
 
 	//注册、设置路由
 	api.RegisterUserServiceHttpHandler(apiJWT, service.UserService{})

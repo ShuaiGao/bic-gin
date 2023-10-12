@@ -2,7 +2,7 @@ app:
   jwt_secret: "abc123"
   jwt_refresh_secret: "abc123789"
   log_save_path: "run/logs/"
-  log_save_name: "gin-bic.log"
+  log_save_name: "bic-gin.log"
 
 server:
   run_mode: "debug"

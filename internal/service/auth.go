@@ -1,10 +1,10 @@
 package service
 
 import (
-	"gin-bic/internal/schema"
-	"gin-bic/pkg/gen"
-	"gin-bic/pkg/gen/api"
-	"gin-bic/pkg/jwt"
+	"bic-gin/internal/schema"
+	"bic-gin/pkg/gen"
+	"bic-gin/pkg/gen/api"
+	"bic-gin/pkg/jwt"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )

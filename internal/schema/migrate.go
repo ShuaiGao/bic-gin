@@ -1,6 +1,6 @@
 package schema
 
-import "gin-bic/pkg/db"
+import "bic-gin/pkg/db"
 
 func AutoMigrate() error {
 	return db.SqlDB().AutoMigrate(&User{})

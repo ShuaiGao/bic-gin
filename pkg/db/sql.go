@@ -1,9 +1,9 @@
 package db
 
 import (
+	"bic-gin/config"
 	"errors"
 	"fmt"
-	"gin-bic/config"
 	"github.com/DATA-DOG/go-sqlmock"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"

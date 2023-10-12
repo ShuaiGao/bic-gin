@@ -1,11 +1,11 @@
 package main
 
 import (
+	"bic-gin/config"
+	"bic-gin/internal"
+	"bic-gin/internal/schema"
+	"bic-gin/pkg/db"
 	"fmt"
-	"gin-bic/config"
-	"gin-bic/internal"
-	"gin-bic/internal/schema"
-	"gin-bic/pkg/db"
 	"github.com/gin-gonic/gin"
 	"log"
 	"net/http"
@@ -15,13 +15,13 @@ import (
 	"time"
 )
 
-// @title         gin-bic api文档
+// @title         bic-gin api文档
 // @version       1.0
 // @contact.name  GaoZiJia
 // @contact.email boringmanman@qq.com
 
-// @host     api.gin-bic.cn
-// @BasePath /api/gin-bic
+// @host     api.bic-gin.cn
+// @BasePath /api/bic-gin
 
 var (
 	gitTag      string
