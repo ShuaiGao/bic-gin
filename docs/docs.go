@@ -70,6 +70,99 @@ const docTemplate = `{
                 }
             }
         },
+        "/v1/menu/page/action/": {
+            "post": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Admin-Service"
+                ],
+                "summary": "添加菜单页面行为",
+                "parameters": [
+                    {
+                        "description": "参数无注释",
+                        "name": "id",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "description": "参数无注释",
+                        "name": "label",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "description": "对应http接口",
+                        "name": "methods",
+                        "in": "body",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/api.HttpMethod"
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object"
+                        }
+                    },
+                    "401": {
+                        "description": "header need Authorization data",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "403": {
+                        "description": "no api permission or no obj permission",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/menus/": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Admin-Service"
+                ],
+                "summary": "获取菜单列表",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/api.ResponseGetMenus"
+                        }
+                    },
+                    "401": {
+                        "description": "header need Authorization data",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "403": {
+                        "description": "no api permission or no obj permission",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
         "/v1/role/:id/": {
             "get": {
                 "produces": [
@@ -275,6 +368,85 @@ const docTemplate = `{
         }
     },
     "definitions": {
+        "api.HttpMethod": {
+            "type": "object",
+            "properties": {
+                "method": {
+                    "description": "required",
+                    "type": "string"
+                },
+                "note": {
+                    "type": "string"
+                },
+                "url": {
+                    "description": "required",
+                    "type": "string"
+                }
+            }
+        },
+        "api.MenuItem": {
+            "type": "object",
+            "properties": {
+                "children": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/api.MenuItem"
+                    }
+                },
+                "id": {
+                    "description": "required",
+                    "type": "string"
+                },
+                "items": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/api.MenuPageAction"
+                    }
+                },
+                "label": {
+                    "description": "required",
+                    "type": "string"
+                },
+                "menu_item_type": {
+                    "description": "required",
+                    "type": "integer"
+                }
+            }
+        },
+        "api.MenuPageAction": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "description": "required",
+                    "type": "string"
+                },
+                "label": {
+                    "type": "string"
+                },
+                "methods": {
+                    "description": "对应http接口",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/api.HttpMethod"
+                    }
+                }
+            }
+        },
+        "api.PageItem": {
+            "type": "object",
+            "properties": {
+                "checked": {
+                    "type": "boolean"
+                },
+                "id": {
+                    "description": "required",
+                    "type": "string"
+                },
+                "label": {
+                    "type": "string"
+                }
+            }
+        },
         "api.ResponseAuth": {
             "type": "object",
             "required": [
@@ -308,6 +480,17 @@ const docTemplate = `{
                 },
                 "username": {
                     "type": "string"
+                }
+            }
+        },
+        "api.ResponseGetMenus": {
+            "type": "object",
+            "properties": {
+                "route_list": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/api.MenuItem"
+                    }
                 }
             }
         },
@@ -345,6 +528,12 @@ const docTemplate = `{
                 "remark": {
                     "description": "备注",
                     "type": "string"
+                },
+                "route_list": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/api.RouteNode"
+                    }
                 },
                 "update_time": {
                     "description": "更新时间",
@@ -483,6 +672,30 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "title": {
+                    "type": "string"
+                }
+            }
+        },
+        "api.RouteNode": {
+            "type": "object",
+            "properties": {
+                "children": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/api.RouteNode"
+                    }
+                },
+                "id": {
+                    "description": "required",
+                    "type": "string"
+                },
+                "items": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/api.PageItem"
+                    }
+                },
+                "label": {
                     "type": "string"
                 }
             }
