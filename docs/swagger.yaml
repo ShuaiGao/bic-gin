@@ -1,5 +1,20 @@
 basePath: /api/bic-gin
 definitions:
+  api.ApiItem:
+    properties:
+      key:
+        description: required
+        type: string
+      label:
+        description: required
+        type: string
+      method:
+        description: required
+        type: string
+      url:
+        description: required
+        type: string
+    type: object
   api.HttpMethod:
     properties:
       method:
@@ -11,11 +26,26 @@ definitions:
         description: required
         type: string
     type: object
-  api.MenuItem:
+  api.ItemApi:
+    properties:
+      Key:
+        description: required
+        type: string
+      Label:
+        description: required
+        type: string
+      Method:
+        description: required
+        type: string
+      Url:
+        description: required
+        type: string
+    type: object
+  api.ItemMenu:
     properties:
       children:
         items:
-          $ref: '#/definitions/api.MenuItem'
+          $ref: '#/definitions/api.ItemMenu'
         type: array
       id:
         description: required
@@ -30,6 +60,20 @@ definitions:
       menu_item_type:
         description: required
         type: integer
+    type: object
+  api.ItemMenuAction:
+    properties:
+      Api_list:
+        description: 对应http接口
+        items:
+          $ref: '#/definitions/api.ItemApi'
+        type: array
+      key:
+        description: required
+        type: string
+      label:
+        description: required
+        type: string
     type: object
   api.MenuPageAction:
     properties:
@@ -53,6 +97,13 @@ definitions:
         type: string
       label:
         type: string
+    type: object
+  api.ResponseApis:
+    properties:
+      api_list:
+        items:
+          $ref: '#/definitions/api.ApiItem'
+        type: array
     type: object
   api.ResponseAuth:
     properties:
@@ -80,11 +131,18 @@ definitions:
     - token
     - token_refresh
     type: object
+  api.ResponseGetMenuAction:
+    properties:
+      action_list:
+        items:
+          $ref: '#/definitions/api.ItemMenuAction'
+        type: array
+    type: object
   api.ResponseGetMenus:
     properties:
       route_list:
         items:
-          $ref: '#/definitions/api.MenuItem'
+          $ref: '#/definitions/api.ItemMenu'
         type: array
     type: object
   api.ResponseGetRole:
@@ -265,6 +323,26 @@ info:
   title: bic-gin api文档
   version: "1.0"
 paths:
+  /v1/apis:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/api.ResponseApis'
+        "401":
+          description: header need Authorization data
+          schema:
+            type: string
+        "403":
+          description: no api permission or no obj permission
+          schema:
+            type: string
+      summary: 获取接口列表
+      tags:
+      - Admin-Service
   /v1/auth:
     post:
       parameters:
@@ -299,6 +377,31 @@ paths:
       tags:
       - Auth-Service
   /v1/menu/:key/action:
+    get:
+      parameters:
+      - description: some id
+        in: path
+        name: key
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/api.ResponseGetMenuAction'
+        "401":
+          description: header need Authorization data
+          schema:
+            type: string
+        "403":
+          description: no api permission or no obj permission
+          schema:
+            type: string
+      summary: 获取菜单
+      tags:
+      - Admin-Service
     post:
       parameters:
       - description: some id
@@ -318,12 +421,12 @@ paths:
         required: true
         schema:
           type: string
-      - description: 对应http接口
+      - description: 对应api key列表
         in: body
-        name: methods
+        name: apis
         schema:
           items:
-            $ref: '#/definitions/api.HttpMethod'
+            type: string
           type: array
       produces:
       - application/json
@@ -341,6 +444,46 @@ paths:
           schema:
             type: string
       summary: 添加菜单页面行为
+      tags:
+      - Admin-Service
+  /v1/menu/action:
+    patch:
+      parameters:
+      - description: 参数无注释
+        in: body
+        name: key
+        required: true
+        schema:
+          type: string
+      - description: 参数无注释
+        in: body
+        name: label
+        required: true
+        schema:
+          type: string
+      - description: 对应api key列表
+        in: body
+        name: apis
+        schema:
+          items:
+            type: string
+          type: array
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: object
+        "401":
+          description: header need Authorization data
+          schema:
+            type: string
+        "403":
+          description: no api permission or no obj permission
+          schema:
+            type: string
+      summary: 修改菜单页面行为
       tags:
       - Admin-Service
   /v1/menus:
@@ -456,6 +599,37 @@ paths:
       summary: 刷新token
       tags:
       - Auth-Service
+  /v1/user/:id:
+    patch:
+      parameters:
+      - description: some id
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: 参数无注释
+        in: body
+        name: role_id
+        schema:
+          type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: object
+        "401":
+          description: header need Authorization data
+          schema:
+            type: string
+        "403":
+          description: no api permission or no obj permission
+          schema:
+            type: string
+      summary: 修改用户权限
+      tags:
+      - User-Service
   /v1/users:
     get:
       parameters:

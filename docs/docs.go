@@ -19,6 +19,37 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/v1/apis": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Admin-Service"
+                ],
+                "summary": "获取接口列表",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/api.ResponseApis"
+                        }
+                    },
+                    "401": {
+                        "description": "header need Authorization data",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "403": {
+                        "description": "no api permission or no obj permission",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
         "/v1/auth": {
             "post": {
                 "produces": [
@@ -71,6 +102,44 @@ const docTemplate = `{
             }
         },
         "/v1/menu/:key/action": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Admin-Service"
+                ],
+                "summary": "获取菜单",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "some id",
+                        "name": "key",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/api.ResponseGetMenuAction"
+                        }
+                    },
+                    "401": {
+                        "description": "header need Authorization data",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "403": {
+                        "description": "no api permission or no obj permission",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            },
             "post": {
                 "produces": [
                     "application/json"
@@ -106,13 +175,75 @@ const docTemplate = `{
                         }
                     },
                     {
-                        "description": "对应http接口",
-                        "name": "methods",
+                        "description": "对应api key列表",
+                        "name": "apis",
                         "in": "body",
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/api.HttpMethod"
+                                "type": "string"
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object"
+                        }
+                    },
+                    "401": {
+                        "description": "header need Authorization data",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "403": {
+                        "description": "no api permission or no obj permission",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/menu/action": {
+            "patch": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Admin-Service"
+                ],
+                "summary": "修改菜单页面行为",
+                "parameters": [
+                    {
+                        "description": "参数无注释",
+                        "name": "key",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "description": "参数无注释",
+                        "name": "label",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "description": "对应api key列表",
+                        "name": "apis",
+                        "in": "body",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
                             }
                         }
                     }
@@ -314,6 +445,54 @@ const docTemplate = `{
                 }
             }
         },
+        "/v1/user/:id": {
+            "patch": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "User-Service"
+                ],
+                "summary": "修改用户权限",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "some id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "参数无注释",
+                        "name": "role_id",
+                        "in": "body",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object"
+                        }
+                    },
+                    "401": {
+                        "description": "header need Authorization data",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "403": {
+                        "description": "no api permission or no obj permission",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
         "/v1/users": {
             "get": {
                 "produces": [
@@ -375,6 +554,27 @@ const docTemplate = `{
         }
     },
     "definitions": {
+        "api.ApiItem": {
+            "type": "object",
+            "properties": {
+                "key": {
+                    "description": "required",
+                    "type": "string"
+                },
+                "label": {
+                    "description": "required",
+                    "type": "string"
+                },
+                "method": {
+                    "description": "required",
+                    "type": "string"
+                },
+                "url": {
+                    "description": "required",
+                    "type": "string"
+                }
+            }
+        },
         "api.HttpMethod": {
             "type": "object",
             "properties": {
@@ -391,13 +591,34 @@ const docTemplate = `{
                 }
             }
         },
-        "api.MenuItem": {
+        "api.ItemApi": {
+            "type": "object",
+            "properties": {
+                "Key": {
+                    "description": "required",
+                    "type": "string"
+                },
+                "Label": {
+                    "description": "required",
+                    "type": "string"
+                },
+                "Method": {
+                    "description": "required",
+                    "type": "string"
+                },
+                "Url": {
+                    "description": "required",
+                    "type": "string"
+                }
+            }
+        },
+        "api.ItemMenu": {
             "type": "object",
             "properties": {
                 "children": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/api.MenuItem"
+                        "$ref": "#/definitions/api.ItemMenu"
                     }
                 },
                 "id": {
@@ -417,6 +638,26 @@ const docTemplate = `{
                 "menu_item_type": {
                     "description": "required",
                     "type": "integer"
+                }
+            }
+        },
+        "api.ItemMenuAction": {
+            "type": "object",
+            "properties": {
+                "Api_list": {
+                    "description": "对应http接口",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/api.ItemApi"
+                    }
+                },
+                "key": {
+                    "description": "required",
+                    "type": "string"
+                },
+                "label": {
+                    "description": "required",
+                    "type": "string"
                 }
             }
         },
@@ -451,6 +692,17 @@ const docTemplate = `{
                 },
                 "label": {
                     "type": "string"
+                }
+            }
+        },
+        "api.ResponseApis": {
+            "type": "object",
+            "properties": {
+                "api_list": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/api.ApiItem"
+                    }
                 }
             }
         },
@@ -490,13 +742,24 @@ const docTemplate = `{
                 }
             }
         },
+        "api.ResponseGetMenuAction": {
+            "type": "object",
+            "properties": {
+                "action_list": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/api.ItemMenuAction"
+                    }
+                }
+            }
+        },
         "api.ResponseGetMenus": {
             "type": "object",
             "properties": {
                 "route_list": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/api.MenuItem"
+                        "$ref": "#/definitions/api.ItemMenu"
                     }
                 }
             }

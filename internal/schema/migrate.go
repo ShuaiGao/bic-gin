@@ -7,7 +7,7 @@ func AutoMigrate() error {
 		return err
 	}
 	return db.SqlDB().AutoMigrate(
-		&PageAction{},
+		&MenuAction{},
 		&Role{},
 	)
 }

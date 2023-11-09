@@ -2,11 +2,11 @@ package service
 
 import (
 	"bic-gin/internal/schema"
+	"bic-gin/pkg/db"
 	"bic-gin/pkg/gen"
 	"bic-gin/pkg/gen/api"
 	"bic-gin/pkg/jwt"
 	"github.com/gin-gonic/gin"
-	"gorm.io/gorm"
 	"net/http"
 )
 
@@ -14,10 +14,13 @@ type AuthService struct {
 }
 
 func checkAuth(username, password string) (schema.User, bool, error) {
-	return schema.User{
-		Model:    gorm.Model{ID: 10},
-		Username: username,
-	}, true, nil
+	var user schema.User
+	if err := db.SqlDB().
+		Where("username = ?", username).
+		First(&user).Error; err != nil {
+		return user, false, err
+	}
+	return user, true, nil
 }
 
 func (as AuthService) PostAuth(ctx *gin.Context, in *api.RequestAuth) (out *api.ResponseAuth, code api.ErrCode) {

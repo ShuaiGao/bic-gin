@@ -3,9 +3,39 @@ package data
 import (
 	"bic-gin/internal/schema"
 	"bic-gin/pkg/db"
+	"gorm.io/gorm/clause"
 )
 
 func InitData() {
+	InitRole()
+	InitUser()
+	InitApi()
+}
+
+func InitApi() {
+	_ = db.SqlDB().Clauses(clause.OnConflict{DoNothing: true}).Save(&initApiData).Error
+}
+
+func InitUser() {
+	var count int64
+	if err := db.SqlDB().Model(&schema.User{}).Count(&count).Error; err != nil || count > 0 {
+		return
+	}
+	user := schema.User{
+		Username: "bic",
+		Name:     "BIC",
+	}
+	if err := db.SqlDB().Create(&user).Error; err != nil {
+		return
+	}
+	var role schema.Role
+	if err := db.SqlDB().Where("name = '管理员'").First(&role).Error; err != nil {
+		return
+	}
+	db.SqlDB().Exec("insert into role_user(role_id, user_id) values (?,?)", role.ID, user.ID)
+}
+
+func InitRole() {
 	var count int64
 	if err := db.SqlDB().Model(&schema.Menu{}).Count(&count).Error; err != nil || count > 0 {
 		return
@@ -52,8 +82,8 @@ func InitData() {
 	if err := db.SqlDB().Create(menus).Error; err != nil {
 		return
 	}
-	var pageActions []*schema.PageAction
-	pageActions = append(pageActions, []*schema.PageAction{
+	var menuActions []*schema.MenuAction
+	menuActions = append(menuActions, []*schema.MenuAction{
 		{
 			Key:     "admin-user-view",
 			Label:   "查询",
@@ -79,7 +109,7 @@ func InitData() {
 			},
 		},
 	}...)
-	pageActions = append(pageActions, []*schema.PageAction{
+	menuActions = append(menuActions, []*schema.MenuAction{
 		{
 			Key:     "admin-role-view",
 			Label:   "查询",
@@ -105,7 +135,7 @@ func InitData() {
 			},
 		},
 	}...)
-	pageActions = append(pageActions, []*schema.PageAction{
+	menuActions = append(menuActions, []*schema.MenuAction{
 		{
 			Key:     "admin-menu-view",
 			Label:   "查询",
@@ -131,7 +161,14 @@ func InitData() {
 			},
 		},
 	}...)
-	if err := db.SqlDB().Create(&pageActions).Error; err != nil {
+	if err := db.SqlDB().Create(&menuActions).Error; err != nil {
+		return
+	}
+	admin := schema.Role{
+		Name:        "管理员",
+		MenuActions: menuActions,
+	}
+	if err := db.SqlDB().Create(&admin).Error; err != nil {
 		return
 	}
 }

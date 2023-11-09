@@ -4,7 +4,7 @@ import (
 	"bic-gin/config"
 	"bic-gin/internal"
 	"bic-gin/internal/schema"
-	"bic-gin/internal/service/data"
+	"bic-gin/internal/schema/data"
 	"bic-gin/pkg/db"
 	"bic-gin/pkg/jwt"
 	"fmt"
