@@ -9,14 +9,12 @@ import (
 const AUTHORIZATION = "authorization"
 const UserId = "user_id"
 
-var (
-	jwtSecret        = ""
-	jwtSecretRefresh = ""
-)
+var jwtSecret []byte
+var jwtSecretRefresh []byte
 
 func MustInit(secret, secretRefresh string) {
-	jwtSecret = secret
-	jwtSecretRefresh = secretRefresh
+	jwtSecret = []byte(secret)
+	jwtSecretRefresh = []byte(secretRefresh)
 }
 
 type Claims struct {
@@ -26,10 +24,10 @@ type Claims struct {
 }
 
 func GenerateToken(userID uint, username string) (string, string, error) {
-	if jwtSecret == "" {
+	if len(jwtSecret) == 0 {
 		return "", "", errors.New("no jwt secret")
 	}
-	if jwtSecretRefresh == "" {
+	if len(jwtSecretRefresh) == 0 {
 		return "", "", errors.New("no jwt refresh secret")
 	}
 	nowTime := time.Now()
@@ -43,13 +41,11 @@ func GenerateToken(userID uint, username string) (string, string, error) {
 			Issuer:    "bic-gin",
 		},
 	}
-
-	tokenClaims := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	token, err1 := tokenClaims.SignedString(jwtSecret)
+	token, err1 := jwt.NewWithClaims(jwt.SigningMethodHS256, claims).SignedString(jwtSecret)
 	if err1 != nil {
 		return "", "", err1
 	}
-	tokenRefresh, err2 := jwt.NewWithClaims(jwt.SigningMethodHS256, claims).SignedString(jwtSecret)
+	tokenRefresh, err2 := jwt.NewWithClaims(jwt.SigningMethodHS256, claims).SignedString(jwtSecretRefresh)
 	return token, tokenRefresh, err2
 }
 

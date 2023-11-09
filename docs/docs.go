@@ -19,7 +19,7 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/v1/auth/": {
+        "/v1/auth": {
             "post": {
                 "produces": [
                     "application/json"
@@ -27,7 +27,7 @@ const docTemplate = `{
                 "tags": [
                     "Auth-Service"
                 ],
-                "summary": "获取用户列表",
+                "summary": "登录",
                 "parameters": [
                     {
                         "description": "用户名",
@@ -70,7 +70,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/v1/menu/page/action/": {
+        "/v1/menu/:key/action": {
             "post": {
                 "produces": [
                     "application/json"
@@ -81,8 +81,15 @@ const docTemplate = `{
                 "summary": "添加菜单页面行为",
                 "parameters": [
                     {
+                        "type": "string",
+                        "description": "some id",
+                        "name": "key",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
                         "description": "参数无注释",
-                        "name": "id",
+                        "name": "key",
                         "in": "body",
                         "required": true,
                         "schema": {
@@ -132,7 +139,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/v1/menus/": {
+        "/v1/menus": {
             "get": {
                 "produces": [
                     "application/json"
@@ -163,7 +170,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/v1/role/:id/": {
+        "/v1/role/:id": {
             "get": {
                 "produces": [
                     "application/json"
@@ -203,7 +210,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/v1/roles/": {
+        "/v1/roles": {
             "get": {
                 "produces": [
                     "application/json"
@@ -234,7 +241,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/v1/routes/": {
+        "/v1/routes": {
             "get": {
                 "produces": [
                     "application/json"
@@ -265,7 +272,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/v1/token/": {
+        "/v1/token/refresh": {
             "post": {
                 "produces": [
                     "application/json"
@@ -307,7 +314,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/v1/users/": {
+        "/v1/users": {
             "get": {
                 "produces": [
                     "application/json"
@@ -636,6 +643,12 @@ const docTemplate = `{
         "api.RouteItem": {
             "type": "object",
             "properties": {
+                "actions": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
                 "children": {
                     "type": "array",
                     "items": {

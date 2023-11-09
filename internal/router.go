@@ -1,10 +1,13 @@
 package internal
 
 import (
+	_ "bic-gin/docs"
 	"bic-gin/internal/service"
 	"bic-gin/pkg/gen/api"
 	"bic-gin/pkg/jwt"
 	"github.com/gin-gonic/gin"
+	swaggerFiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
 	"net/http"
 )
 
@@ -32,12 +35,15 @@ func SetupRouter() *gin.Engine {
 	g.GET("/health", func(ctx *gin.Context) {
 		ctx.JSON(200, "success")
 	})
-
+	if gin.IsDebugging() {
+		g.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
+	}
 	apiNoJwt := g.Group("/api/bic-gin")
 	api.RegisterAuthServiceHttpHandler(apiNoJwt, service.AuthService{})
 	apiJWT := g.Group("/api/bic-gin", jwt.JWT())
 
 	//注册、设置路由
 	api.RegisterUserServiceHttpHandler(apiJWT, service.UserService{})
+	api.RegisterAdminServiceHttpHandler(apiJWT, service.AdminService{})
 	return g
 }

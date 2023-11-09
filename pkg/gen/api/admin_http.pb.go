@@ -14,11 +14,11 @@ import (
 
 func RegisterAdminServiceHttpHandler(g *gin.RouterGroup, srvs AdminService) {
 	tmp := &x_AdminService{xx: srvs}
-	g.GET("/v1/routes/", tmp.GetRoutes)
-	g.GET("/v1/roles/", tmp.GetRoles)
-	g.GET("/v1/role/:id/", tmp.GetRole)
-	g.GET("/v1/menus/", tmp.GetMenus)
-	g.POST("/v1/menu/page/action/", tmp.PostMenuPageAction)
+	g.GET("/v1/routes", tmp.GetRoutes)
+	g.GET("/v1/roles", tmp.GetRoles)
+	g.GET("/v1/role/:id", tmp.GetRole)
+	g.GET("/v1/menus", tmp.GetMenus)
+	g.POST("/v1/menu/:key/action", tmp.PostMenuPageAction)
 }
 
 type AdminService interface {
@@ -26,7 +26,7 @@ type AdminService interface {
 	GetRoles(ctx *gin.Context) (out *ResponseRoles, code ErrCode)
 	GetRole(ctx *gin.Context, id uint) (out *ResponseGetRole, code ErrCode)
 	GetMenus(ctx *gin.Context) (out *ResponseGetMenus, code ErrCode)
-	PostMenuPageAction(ctx *gin.Context, in *RequestPostMenuPageAction) (out *Empty, code ErrCode)
+	PostMenuPageAction(ctx *gin.Context, in *RequestPostMenuPageAction, key string) (out *Empty, code ErrCode)
 }
 
 // generated http handle
@@ -48,7 +48,7 @@ type x_AdminService struct {
 // @Success 200 {object} ResponseRoute
 // @Failure 401     {string} string       "header need Authorization data"
 // @Failure 403     {string} string       "no api permission or no obj permission"
-// @Router  /v1/routes/ [GET]
+// @Router  /v1/routes [GET]
 func (x *x_AdminService) GetRoutes(ctx *gin.Context) {
 	rsp, errCode := x.xx.GetRoutes(ctx)
 
@@ -65,7 +65,7 @@ func (x *x_AdminService) GetRoutes(ctx *gin.Context) {
 // @Success 200 {object} ResponseRoles
 // @Failure 401 {string} string "header need Authorization data"
 // @Failure 403 {string} string "no api permission or no obj permission"
-// @Router  /v1/roles/ [GET]
+// @Router  /v1/roles [GET]
 func (x *x_AdminService) GetRoles(ctx *gin.Context) {
 	rsp, errCode := x.xx.GetRoles(ctx)
 
@@ -83,7 +83,7 @@ func (x *x_AdminService) GetRoles(ctx *gin.Context) {
 // @Success 200 {object} ResponseGetRole
 // @Failure 401 {string} string "header need Authorization data"
 // @Failure 403 {string} string "no api permission or no obj permission"
-// @Router  /v1/role/:id/ [GET]
+// @Router  /v1/role/:id [GET]
 func (x *x_AdminService) GetRole(ctx *gin.Context) {
 	id, err := strconv.Atoi(ctx.Param("id"))
 	if err != nil || id < 0 {
@@ -107,7 +107,7 @@ func (x *x_AdminService) GetRole(ctx *gin.Context) {
 // @Success 200 {object} ResponseGetMenus
 // @Failure 401 {string} string "header need Authorization data"
 // @Failure 403 {string} string "no api permission or no obj permission"
-// @Router  /v1/menus/ [GET]
+// @Router  /v1/menus [GET]
 func (x *x_AdminService) GetMenus(ctx *gin.Context) {
 	rsp, errCode := x.xx.GetMenus(ctx)
 
@@ -121,20 +121,22 @@ func (x *x_AdminService) GetMenus(ctx *gin.Context) {
 // @Summary 添加菜单页面行为
 // @Tags    Admin-Service
 // @Produce json
-// @Param   id      body     string       true  "参数无注释"
+// @Param   key     path     string       true  "some id"
+// @Param   key     body     string       true  "参数无注释"
 // @Param   label   body     string       true  "参数无注释"
 // @Param   methods body     []HttpMethod false "对应http接口"
 // @Success 200     {object} object       null
 // @Failure 401 {string} string "header need Authorization data"
 // @Failure 403 {string} string "no api permission or no obj permission"
-// @Router  /v1/menu/page/action/ [POST]
+// @Router  /v1/menu/:key/action [POST]
 func (x *x_AdminService) PostMenuPageAction(ctx *gin.Context) {
 	req := &RequestPostMenuPageAction{}
 	if err := ctx.ShouldBindJSON(req); err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"code": 400, "detail": "request error"})
 		return
 	}
-	rsp, errCode := x.xx.PostMenuPageAction(ctx, req)
+	key := ctx.Param("key")
+	rsp, errCode := x.xx.PostMenuPageAction(ctx, req, key)
 
 	ctx.JSON(http.StatusOK, gin.H{
 		"code":   errCode.Code(),

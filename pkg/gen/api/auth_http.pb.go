@@ -13,8 +13,8 @@ import (
 
 func RegisterAuthServiceHttpHandler(g *gin.RouterGroup, srvs AuthService) {
 	tmp := &x_AuthService{xx: srvs}
-	g.POST("/v1/auth/", tmp.PostAuth)
-	g.POST("/v1/token/", tmp.PostRefreshToken)
+	g.POST("/v1/auth", tmp.PostAuth)
+	g.POST("/v1/token/refresh", tmp.PostRefreshToken)
 }
 
 type AuthService interface {
@@ -32,7 +32,7 @@ type x_AuthService struct {
 	xx AuthService
 }
 
-// @Summary 获取用户列表
+// @Summary 登录
 // @Tags    Auth-Service
 // @Produce json
 // @Param   username body     string true "用户名"
@@ -40,7 +40,7 @@ type x_AuthService struct {
 // @Success 200      {object} ResponseAuth
 // @Failure 401      {string} string "header need Authorization data"
 // @Failure 403      {string} string "no api permission or no obj permission"
-// @Router  /v1/auth/ [POST]
+// @Router  /v1/auth [POST]
 func (x *x_AuthService) PostAuth(ctx *gin.Context) {
 	req := &RequestAuth{}
 	if err := ctx.ShouldBindJSON(req); err != nil {
@@ -63,7 +63,7 @@ func (x *x_AuthService) PostAuth(ctx *gin.Context) {
 // @Success 200           {object} ResponseAuth
 // @Failure 401           {string} string "header need Authorization data"
 // @Failure 403           {string} string "no api permission or no obj permission"
-// @Router  /v1/token/ [POST]
+// @Router  /v1/token/refresh [POST]
 func (x *x_AuthService) PostRefreshToken(ctx *gin.Context) {
 	req := &RequestRefreshToken{}
 	if err := ctx.ShouldBindJSON(req); err != nil {

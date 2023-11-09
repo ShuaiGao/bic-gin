@@ -190,6 +190,10 @@ definitions:
     type: object
   api.RouteItem:
     properties:
+      actions:
+        items:
+          type: string
+        type: array
       children:
         items:
           $ref: '#/definitions/api.RouteItem'
@@ -261,7 +265,7 @@ info:
   title: bic-gin api文档
   version: "1.0"
 paths:
-  /v1/auth/:
+  /v1/auth:
     post:
       parameters:
       - description: 用户名
@@ -291,15 +295,20 @@ paths:
           description: no api permission or no obj permission
           schema:
             type: string
-      summary: 获取用户列表
+      summary: 登录
       tags:
       - Auth-Service
-  /v1/menu/page/action/:
+  /v1/menu/:key/action:
     post:
       parameters:
+      - description: some id
+        in: path
+        name: key
+        required: true
+        type: string
       - description: 参数无注释
         in: body
-        name: id
+        name: key
         required: true
         schema:
           type: string
@@ -334,7 +343,7 @@ paths:
       summary: 添加菜单页面行为
       tags:
       - Admin-Service
-  /v1/menus/:
+  /v1/menus:
     get:
       produces:
       - application/json
@@ -354,7 +363,7 @@ paths:
       summary: 获取菜单列表
       tags:
       - Admin-Service
-  /v1/role/:id/:
+  /v1/role/:id:
     get:
       parameters:
       - description: some id
@@ -380,7 +389,7 @@ paths:
       summary: 获取角色详情
       tags:
       - Admin-Service
-  /v1/roles/:
+  /v1/roles:
     get:
       produces:
       - application/json
@@ -400,7 +409,7 @@ paths:
       summary: 获取角色列表
       tags:
       - Admin-Service
-  /v1/routes/:
+  /v1/routes:
     get:
       produces:
       - application/json
@@ -420,7 +429,7 @@ paths:
       summary: 获取路由
       tags:
       - Admin-Service
-  /v1/token/:
+  /v1/token/refresh:
     post:
       parameters:
       - description: 参数无注释
@@ -447,7 +456,7 @@ paths:
       summary: 刷新token
       tags:
       - Auth-Service
-  /v1/users/:
+  /v1/users:
     get:
       parameters:
       - description: 页码

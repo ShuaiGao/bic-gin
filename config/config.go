@@ -11,7 +11,7 @@ var AppSetting *App
 
 type App struct {
 	JwtSecret             string `yaml:"jwt_secret"`
-	JwtRefreshSecret      string `yaml:"jjwt_refresh_secret"`
+	JwtRefreshSecret      string `yaml:"jwt_refresh_secret"`
 	RuntimeRootPath       string `yaml:"runtime_root_path"`
 	CasbinModelPath       string `yaml:"casbin_model_path"`
 	LogSavePath           string `yaml:"log_save_path"`

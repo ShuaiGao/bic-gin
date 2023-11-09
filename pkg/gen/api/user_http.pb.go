@@ -13,7 +13,7 @@ import (
 
 func RegisterUserServiceHttpHandler(g *gin.RouterGroup, srvs UserService) {
 	tmp := &x_UserService{xx: srvs}
-	g.GET("/v1/users/", tmp.GetUsers)
+	g.GET("/v1/users", tmp.GetUsers)
 }
 
 type UserService interface {
@@ -40,7 +40,7 @@ type x_UserService struct {
 // @Success 200       {object} ResponseUsers
 // @Failure 401       {string} string "header need Authorization data"
 // @Failure 403       {string} string "no api permission or no obj permission"
-// @Router  /v1/users/ [GET]
+// @Router  /v1/users [GET]
 func (x *x_UserService) GetUsers(ctx *gin.Context) {
 	req := &RequestUsers{}
 	if err := ctx.ShouldBindQuery(req); err != nil {

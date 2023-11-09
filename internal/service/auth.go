@@ -6,6 +6,7 @@ import (
 	"bic-gin/pkg/gen/api"
 	"bic-gin/pkg/jwt"
 	"github.com/gin-gonic/gin"
+	"gorm.io/gorm"
 	"net/http"
 )
 
@@ -13,7 +14,10 @@ type AuthService struct {
 }
 
 func checkAuth(username, password string) (schema.User, bool, error) {
-	return schema.User{Username: username}, true, nil
+	return schema.User{
+		Model:    gorm.Model{ID: 10},
+		Username: username,
+	}, true, nil
 }
 
 func (as AuthService) PostAuth(ctx *gin.Context, in *api.RequestAuth) (out *api.ResponseAuth, code api.ErrCode) {
@@ -22,24 +26,14 @@ func (as AuthService) PostAuth(ctx *gin.Context, in *api.RequestAuth) (out *api.
 		code = api.ECParam
 		return
 	}
-
-	req := &api.RequestAuth{}
-	if ok := ctx.Bind(req); ok != nil {
-		ctx.JSON(http.StatusOK, gen.Response{Code: 400, Message: " request error"})
-		return
-	}
-	if err := gen.Validate.Struct(req); err != nil {
-		ctx.JSON(http.StatusOK, gen.Response{Code: 400, Message: "参数错误"})
-		return
-	}
-	user, ok, err := checkAuth(req.Username, req.Password)
+	user, ok, err := checkAuth(in.Username, in.Password)
 	if !ok || err != nil {
-		ctx.JSON(http.StatusOK, gen.Response{Code: 400, Message: "username or password wrong"})
+		code = api.ECAuth.Wrap(err)
 		return
 	}
 	token, tokenRefresh, err := jwt.GenerateToken(user.ID, user.Username)
 	if err != nil {
-		ctx.JSON(http.StatusOK, gen.Response{Code: 500, Message: "gen token error"})
+		code = api.ECTokenGen.Wrap(err)
 		return
 	}
 	out = &api.ResponseAuth{Token: token, TokenRefresh: tokenRefresh}

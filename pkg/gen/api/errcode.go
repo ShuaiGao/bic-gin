@@ -70,4 +70,5 @@ var (
 	ECParamRefreshToken = Err{code: 2003, msg: "刷新token错误"}
 	ECSms               = Err{code: 3002, msg: "手机验证码发送失败"}
 	ECTokenGen          = Err{code: 3003, msg: "token生成错误"}
+	ECAuth              = Err{code: 3004, msg: "账户或密码错误"}
 )

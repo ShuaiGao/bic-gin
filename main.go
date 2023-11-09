@@ -4,7 +4,9 @@ import (
 	"bic-gin/config"
 	"bic-gin/internal"
 	"bic-gin/internal/schema"
+	"bic-gin/internal/service/data"
 	"bic-gin/pkg/db"
+	"bic-gin/pkg/jwt"
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"log"
@@ -33,8 +35,10 @@ var (
 
 func MustInit() {
 	config.MustSetupYaml()
+	jwt.MustInit(config.AppSetting.JwtSecret, config.AppSetting.JwtRefreshSecret)
 	db.MustInitMysql(config.MysqlSetting)
 	schema.AutoMigrate()
+	data.InitData()
 }
 
 func main() {
