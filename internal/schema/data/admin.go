@@ -53,30 +53,38 @@ func InitRole() {
 	}
 	var menus []*schema.Menu
 	permission := &schema.Menu{
+		Name:  "admin",
 		Key:   "admin",
 		Label: "权限管理",
 		Rank:  10,
+		Path:  "/permission",
 	}
 	if err := db.SqlDB().Omit("FatherKey").Create(permission).Error; err != nil {
 		return
 	}
 	adminUser := &schema.Menu{
+		Name:      "admin-user",
 		Key:       "admin-user",
 		Label:     "用户管理",
 		FatherKey: "admin",
 		Rank:      1,
+		Path:      "/permission/user/index",
 	}
 	adminRole := &schema.Menu{
+		Name:      "admin-role",
 		Key:       "admin-role",
 		Label:     "角色管理",
 		FatherKey: "admin",
 		Rank:      2,
+		Path:      "/permission/page/index",
 	}
 	adminMenu := &schema.Menu{
+		Name:      "admin-menu",
 		Key:       "admin-menu",
 		Label:     "菜单管理",
 		FatherKey: "admin",
 		Rank:      3,
+		Path:      "/permission/menu/index",
 	}
 	menus = append(menus, adminUser, adminRole, adminMenu)
 	if err := db.SqlDB().Create(menus).Error; err != nil {

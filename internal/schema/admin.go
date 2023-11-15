@@ -21,7 +21,9 @@ type Api struct {
 
 type Menu struct {
 	Key       string `gorm:"primarykey;size:32;"`
+	Name      string `gorm:"size:128;"`
 	Label     string `gorm:"size:128"`
+	Path      string `gorm:"size:128"`
 	Rank      int
 	FatherKey string `gorm:"default:null;size:32"`
 	Father    *Menu  `gorm:"default:galeone;foreignKey:FatherKey;References:key;"`

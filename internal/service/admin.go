@@ -93,7 +93,11 @@ func fillChildrenRoute(menuMap map[string][]*schema.Menu, actionMap map[string][
 	for _, v := range children {
 		item := &api.RouteItem{
 			Key:  v.Key,
-			Name: v.Label,
+			Name: v.Name,
+			Path: v.Path,
+			Meta: &api.RouteMeta{
+				Title: v.Label,
+			},
 		}
 		item.Children = fillChildrenRoute(menuMap, actionMap, item, v.Key)
 		itemList = append(itemList, item)
